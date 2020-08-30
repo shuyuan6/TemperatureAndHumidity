@@ -1,22 +1,26 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.StringTokenizer;
 
 // A ClientHandler reads an HTTP request and responds
-class ClientHandler extends Thread {
+class ClientHandlerTask implements Runnable {
     private Socket socket;  // The accepted socket from the Webserver
     private String path;
+    private final static Logger LOGGER = LoggerFactory.getLogger(ClientHandlerTask.class);
     // Start the thread in the constructor
-    public ClientHandler(Socket s, String path) {
+    public ClientHandlerTask(Socket s, String path) {
         socket = s;
         this.path = path;
-        start();
     }
 
 
     @Override// Read the HTTP request, respond, and close the connection
     public void run() {
         try {
+            LOGGER.info("id of the thread is " + Thread.currentThread().getId());
             // Open connections to the socket
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintStream out = new PrintStream(new BufferedOutputStream(socket.getOutputStream()));
@@ -86,7 +90,7 @@ class ClientHandler extends Thread {
                         "Content-type: text/html\r\n\r\n"+
                         "<html><head></head><body>"+url+" not found</body></html>\n");
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             finally {
                 out.close();
