@@ -27,6 +27,10 @@ Java, Python, web service built with raw sockets.
 Here is a sneak peek on the data schema used by the aforementioned DynamoDB table.
 ![ddb](https://github.com/shuyuan6/TemperatureAndHumidity/blob/master/ddb_table.png?raw=true)
 
+## Web UI
+Here is a snapshot of the webservice UI. It is pretty scrappy yet, but very easy to look at. I placed the sensor in my home near my work area, and you can find periodical patterns in both temperature and humidity levels.
+
+![webUI](https://github.com/shuyuan6/TemperatureAndHumidity/blob/master/web_ui.png?raw=true)
 
 ## Future work
 The most fun part of the project, aside from engineering challenges arising from building it, is to provide various creative ways for end users to analyze data and gain insignts from the data. Perhaps it can even serve as the prototype of a commerical temperature monitor system.
