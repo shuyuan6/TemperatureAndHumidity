@@ -24,7 +24,8 @@ A webservice, either hosted on administrator's desktop computer, or AWS EC2 for 
 Java, Python, web service built with raw sockets.
 
 ## Data storage schema
-
+Here is a sneak peek on the data schema used by the aforementioned DynamoDB table.
+![ddb](https://github.com/shuyuan6/TemperatureAndHumidity/blob/master/ddb_table.png?raw=true)
 
 
 ## Future work
