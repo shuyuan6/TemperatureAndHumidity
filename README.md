@@ -1,11 +1,17 @@
 # TemperatureAndHumidity
-A simple http server to display the temperature and humidity data stored in Dynamo DB.
+This is a project that combines low cost hardware and cloud technologies to establish an ambience environment monitoring system, and provide an easy and accessible 
+human computer interface.
 
 ## Architecture
 
+### Overview
+
+![architecture](https://github.com/shuyuan6/TemperatureAndHumidity/blob/master/architecture.png?raw=true)
+
+
 ### Data generation side
 
-A cost efficient Raspberry Pi 4 runs at the enviornment that needs monitoring, with an attached DHT22 temperature and humidity sensor. A Python service running on the Raspberry Pi periodically reads sensor data and sending the data to AWS DynamoDB for storage. </p>
+A cost efficient Raspberry Pi 4 runs at the enviornment that needs monitoring, with an attached DHT22 temperature and humidity sensor. A Python service running on the Raspberry Pi periodically reads sensor data and sends the data to AWS DynamoDB for storage.
 
 ### Data ingestion side
 
@@ -13,8 +19,6 @@ A pre-created table living on AWS DynamoDB receives writes from data generation 
 
 ### Data displaying and analysis side
 A webservice, either hosted on administrator's desktop computer, or AWS EC2 for external normal user, is set up. The web service renders the data with HTML in both tabular and graph based format, showing max, min, average, median temperature in a history window with configurable length.
-
-![architecture](https://github.com/shuyuan6/TemperatureAndHumidity/blob/master/architecture.png?raw=true)
 
 ## Technology
 Java, Python, web service built with raw sockets.
