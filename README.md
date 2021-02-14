@@ -1,4 +1,4 @@
-# TemperatureAndHumidity
+# Temperature And Humidity Monitoring System
 This is a project that combines low cost hardware and cloud technologies to establish an ambience environment monitoring system, and provide an easy and accessible 
 human computer interface.
 
@@ -22,6 +22,10 @@ A webservice, either hosted on administrator's desktop computer, or AWS EC2 for 
 
 ## Technology
 Java, Python, web service built with raw sockets.
+
+## Data storage schema
+
+
 
 ## Future work
 The most fun part of the project, aside from engineering challenges arising from building it, is to provide various creative ways for end users to analyze data and gain insignts from the data. Perhaps it can even serve as the prototype of a commerical temperature monitor system.
