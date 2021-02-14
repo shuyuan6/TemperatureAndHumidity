@@ -15,3 +15,6 @@ http://localhost/1000.html
 ```
 
 The number `1000` in the above URL means you are interested in view the data in the most recent 1000 hours.
+
+## How it works
+The webservice, after being launched, will be listening to port `80`. For each incoming TCP connection, it will fire up a new thread and execute code inside `ClientHandlerTask`. It would assume that the data flowing in will conform to a simple HTTP protocal (i.e. GET request with a path like `/1000.html`, specifying how many hours of data need to be pulled). It will then use AWS DynamoDB client to read back enough data, visualize the data into a PNG file and put it at `/tmp/`. It will then render a simple HTML webpage containing an image link. On receiving the HTML website, the browser would send a subsequent request to obtain the image which the webservice send the image back to the browser.
