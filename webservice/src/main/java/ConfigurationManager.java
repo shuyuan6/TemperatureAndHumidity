@@ -30,7 +30,7 @@ public class ConfigurationManager {
         } catch (FileNotFoundException e) {
             throw new HttpConfigurationException(e);
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int i ;
         try {
             while ( ( i = fileReader.read()) != -1) {

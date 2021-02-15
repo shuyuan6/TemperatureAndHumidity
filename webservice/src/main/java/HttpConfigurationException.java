@@ -1,9 +1,6 @@
 
 public class HttpConfigurationException extends RuntimeException {
 
-    public HttpConfigurationException() {
-    }
-
     public HttpConfigurationException(String message) {
         super(message);
     }

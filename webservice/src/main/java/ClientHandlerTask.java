@@ -7,15 +7,14 @@ import java.util.StringTokenizer;
 
 // A ClientHandler reads an HTTP request and responds
 class ClientHandlerTask implements Runnable {
-    private Socket socket;  // The accepted socket from the Webserver
-    private String path;
+    final private Socket socket;  // The accepted socket from the Webserver
+    final private String path;
     private final static Logger LOGGER = LoggerFactory.getLogger(ClientHandlerTask.class);
     // Start the thread in the constructor
     public ClientHandlerTask(Socket s, String path) {
         socket = s;
         this.path = path;
     }
-
 
     @Override// Read the HTTP request, respond, and close the connection
     public void run() {
@@ -95,9 +94,8 @@ class ClientHandlerTask implements Runnable {
             finally {
                 out.close();
             }
-        }
-        catch (IOException x) {
-            System.out.println(x);
+        } catch (IOException x) {
+            System.out.println(x.getMessage());
         }
     }
 }

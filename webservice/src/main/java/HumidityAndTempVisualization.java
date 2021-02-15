@@ -4,9 +4,7 @@ import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import org.knowm.xchart.*;
 import org.knowm.xchart.style.Styler;
-import org.knowm.xchart.style.markers.SeriesMarkers;
 
-import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -28,9 +26,6 @@ public class HumidityAndTempVisualization {
         DynamoDB dynamoDB = new DynamoDB(client);
 
         Table table = dynamoDB.getTable("HumidityTemperatureTest");
-
-        HashMap<String, String> nameMap = new HashMap<String, String>();
-        nameMap.put("#tp", "temp");
 
         HashMap<String, Object> valueMap = new HashMap<String, Object>();
         valueMap.put(":deviceID", "1");
@@ -103,19 +98,20 @@ public class HumidityAndTempVisualization {
         List<Double> temperatureData = new ArrayList<>();
 
         retrieveData(duration, timestamps, humidityData, temperatureData);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("<h1>Temperature and Humidity</h1><table><tr><th>Time</th><th>Temperature</th><th>Humidity</th></tr>");
         for (int i = 0; i < timestamps.size(); i++) {
             long epoch = timestamps.get(i).longValue();
             Instant instant = Instant.ofEpochSecond(epoch);
             String time = ZonedDateTime.ofInstant(instant, ZoneOffset.ofHours(-7)).toString();
-            sb.append("<tr><td>" + time + "</td><td>" + String.format("%.2f", temperatureData.get(i)) + "</td><td>" + String.format("%.2f", humidityData.get(i)) + "</td></tr>");
+            sb.append("<tr><td>").append(time).append("</td><td>")
+                    .append(String.format("%.2f", temperatureData.get(i)))
+                    .append("</td><td>").append(String.format("%.2f", humidityData.get(i)))
+                    .append("</td></tr>");
         }
 
         sb.append("</table>");
-
         return sb.toString();
-
     }
 }
 

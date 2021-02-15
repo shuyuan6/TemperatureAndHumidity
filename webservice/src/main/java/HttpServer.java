@@ -14,7 +14,6 @@ import java.util.concurrent.Executors;
  *
  */
 public class HttpServer {
-    private static ServerSocket serverSocket;
     private final static Logger LOGGER = LoggerFactory.getLogger(HttpServer.class);
 
     static final int MAX_T = 5;
@@ -31,15 +30,15 @@ public class HttpServer {
         LOGGER.info("Using Port: " + conf.getPort());
         LOGGER.info("Using WebRoot: " + conf.getWebroot());
 
-        serverSocket = new ServerSocket(conf.getPort());
-        while (true) {
+        ServerSocket serverSocket = new ServerSocket(conf.getPort());
+        while(true) {
             try {
                 Socket s = serverSocket.accept();  // Wait for a client to connect
                 Runnable runnable = new ClientHandlerTask(s, conf.getWebroot());  // Handle the client in a separate thread
                 pool.execute(runnable);
             }
             catch (Exception x) {
-                System.out.println(x);
+                System.out.println(x.getMessage());
             }
         }
     }
