@@ -2,8 +2,12 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import com.amazonaws.services.dynamodbv2.xspec.L;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import org.json.simple.JSONArray;
 import org.knowm.xchart.*;
 import org.knowm.xchart.style.Styler;
+import org.json.simple.JSONObject;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -14,10 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class HumidityAndTempVisualization {
-    private void retrieveData(int duration, List<Double> timestamps, List<Double> humidityData, List<Double> temperatureData) {
 
-        double ts2 = Instant.now().getEpochSecond();
-        double ts1 = ts2 - (duration * 60 * 60);
+    private void retrieveData(double startTime, double endTime, List<Double> timestamps, List<Double> humidityData, List<Double> temperatureData) {
 
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
                 .withRegion("us-west-2")
@@ -29,8 +31,8 @@ public class HumidityAndTempVisualization {
 
         HashMap<String, Object> valueMap = new HashMap<String, Object>();
         valueMap.put(":deviceID", "1");
-        valueMap.put(":TS1", ts1);
-        valueMap.put(":TS2", ts2);
+        valueMap.put(":TS1", startTime);
+        valueMap.put(":TS2", endTime);
 
         QuerySpec querySpec = new QuerySpec().withKeyConditionExpression("DeviceID = :deviceID and TS between :TS1 and :TS2")
                 .withValueMap(valueMap);
@@ -60,58 +62,26 @@ public class HumidityAndTempVisualization {
         }
     }
 
-    public void humidityTempSaveToImage(int duration, String imageName, String path) throws Exception {
+    public String humidityTempToJson(double startTime, double endTime) throws Exception {
         List<Double> timestamps = new ArrayList<>();
         List<Double> humidityData = new ArrayList<>();
         List<Double> temperatureData = new ArrayList<>();
 
-        retrieveData(duration, timestamps, humidityData, temperatureData);
-        XYChart chart = new XYChartBuilder().width(1600).height(600).title("Temperature and Humidity")
-                .xAxisTitle("Timestamp").yAxisTitle("Record").build();
+        retrieveData(startTime, endTime, timestamps, humidityData, temperatureData);
+        JSONObject obj = new JSONObject();
+        obj.put("1", new JSONArray());
 
-        // Customize Chart
-        chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNE);
-        chart.getStyler().setAxisTitlesVisible(false);
-        chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Step);
-
-        double[] tss = new double[timestamps.size()];
-        double[] temps = new double[temperatureData.size()];
-        double[] humds = new double[humidityData.size()];
-
-        for (int i = 0; i < tss.length; i++) {
-            tss[i] = timestamps.get(i);
-            temps[i] = temperatureData.get(i);
-            humds[i] = humidityData.get(i);
-        }
-        // Series
-        chart.addSeries("Temperature", tss, temps);
-        chart.addSeries("Humidity", tss, humds);
-
-        //new SwingWrapper<XYChart>(chart).displayChart();
-        BitmapEncoder.saveBitmapWithDPI(chart, path + imageName, BitmapEncoder.BitmapFormat.PNG, 300);
-
-    }
-
-    public String humidityTempToHtml(int duration) throws Exception {
-        List<Double> timestamps = new ArrayList<>();
-        List<Double> humidityData = new ArrayList<>();
-        List<Double> temperatureData = new ArrayList<>();
-
-        retrieveData(duration, timestamps, humidityData, temperatureData);
-        StringBuilder sb = new StringBuilder();
-        sb.append("<h1>Temperature and Humidity</h1><table><tr><th>Time</th><th>Temperature</th><th>Humidity</th></tr>");
         for (int i = 0; i < timestamps.size(); i++) {
             long epoch = timestamps.get(i).longValue();
             Instant instant = Instant.ofEpochSecond(epoch);
-            String time = ZonedDateTime.ofInstant(instant, ZoneOffset.ofHours(-7)).toString();
-            sb.append("<tr><td>").append(time).append("</td><td>")
-                    .append(String.format("%.2f", temperatureData.get(i)))
-                    .append("</td><td>").append(String.format("%.2f", humidityData.get(i)))
-                    .append("</td></tr>");
+            String time = ZonedDateTime.ofInstant(instant, ZoneOffset.ofHours(-7)).toLocalDateTime().toString();
+            JSONObject part = new JSONObject();
+            part.put("ts", time);
+            part.put("temperature", temperatureData.get(i));
+            part.put("humidity", humidityData.get(i));
+            ((JSONArray)obj.get("1")).add(part);
         }
-
-        sb.append("</table>");
-        return sb.toString();
+        return obj.toJSONString();
     }
 }
 

@@ -24,7 +24,7 @@ public class HttpServer {
 
         LOGGER.info("Server starting...");
 
-        ConfigurationManager.getInstance().loadConfigurationFile("src/main/resources/http.json");
+        ConfigurationManager.getInstance().loadConfigurationFile("webservice/src/main/resources/http.json");
         Configuration conf = ConfigurationManager.getInstance().getCurrentConfiguration();
 
         LOGGER.info("Using Port: " + conf.getPort());
